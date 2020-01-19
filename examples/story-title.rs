@@ -33,7 +33,25 @@ fn main() -> Result<(), Error> {
         let item_json = value.unwrap();
 
         let item: Item = serde_json::from_str(&item_json).unwrap();
-        println!("{:?}", item.title().unwrap());
+
+        match item_json.as_ref() {
+            "null" => println!("\n{} null\n", key),
+            _ => {
+                let item: Item = serde_json::from_str(&item_json).unwrap();
+                let item_type = item.item_type();
+                match item_type.as_ref() {
+                    "story" => {
+                        println!("{} story", key);
+                        println!("{:?}", item.title().unwrap());
+                        // let _ = write_json_to_redis(item_id.to_string(), item_json);
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        //        println!("{:?}", item.title().unwrap());
+
         /*
                 println!("{} story", item_id);
                 println!("{:?}", item.title().unwrap());
