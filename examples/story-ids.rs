@@ -17,24 +17,12 @@ fn main() -> Result<(), Error> {
     let mut keys = get_hashmap_keys("hn-story-20".to_string()).unwrap();
     keys.sort();
 
-    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
-    let pool = r2d2::Pool::builder().build(manager).unwrap();
-
-    let pool = pool.clone();
-    let mut con = pool.get().unwrap();
-
     let path = "./../data/story-ids.json";
     let mut output = File::create(path)?;
 
     write!(output, "{}", "[")?;
 
     for key in &keys {
-        let value: RedisResult<String> = con.hget("hn-story-20".to_string(), key.to_string());
-        let json = value.unwrap();
-
-        // println!("{}", key);
-        // println!("{}", json);
-
         write!(output, "{}", key.to_string())?;
         write!(output, "{}", ",")?;
     }
